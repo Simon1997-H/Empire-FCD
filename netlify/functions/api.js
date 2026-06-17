@@ -119,14 +119,23 @@ exports.handler = async (event) => {
 };
 
 async function loadDb() {
-  const store = getStore("empire-time-tracker");
+  const store = openStore();
   const db = await store.get(STORE_KEY, { type: "json" });
   return db || seedDb();
 }
 
 async function saveDb(db) {
-  const store = getStore("empire-time-tracker");
+  const store = openStore();
   await store.setJSON(STORE_KEY, db);
+}
+
+function openStore() {
+  const siteID = process.env.NETLIFY_BLOBS_SITE_ID || process.env.NETLIFY_SITE_ID || process.env.SITE_ID;
+  const token = process.env.NETLIFY_BLOBS_TOKEN || process.env.NETLIFY_AUTH_TOKEN;
+  if (siteID && token) {
+    return getStore("empire-time-tracker", { siteID, token });
+  }
+  return getStore("empire-time-tracker");
 }
 
 function seedDb() {

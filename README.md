@@ -15,6 +15,15 @@ Set this environment variable in Netlify:
 ADMIN_PASSCODE=your-secret-passcode
 ```
 
+If the worker page says `Request failed` and the API log says Netlify Blobs is not configured, also add:
+
+```text
+NETLIFY_BLOBS_SITE_ID=your-netlify-project-id
+NETLIFY_BLOBS_TOKEN=your-netlify-personal-access-token
+```
+
+Find the Project ID in Netlify under Project configuration > General > Project information. Create a personal access token from User settings > Applications > Personal access tokens.
+
 If you do not set it, the temporary default passcode is:
 
 ```text
@@ -65,4 +74,3 @@ Give workers only the worker link.
 7. Give workers the `/worker.html` link.
 
 Workers check in and out from their phones. Finished shifts appear in admin as pending entries. Admin can approve, reject, or return entries to pending.
-
