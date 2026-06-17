@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#172026">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Empire Admin">
+    <title>Empire Formwork Admin</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div id="login" class="login">
+      <form id="loginForm" class="panel">
+        <div class="brand">
+          <div class="brand-mark"><img src="empire-formwork-logo.png" alt="Empire Formwork logo"></div>
+          <div>
+            <p class="brand-title">Empire Formwork</p>
+            <p class="muted">Admin access</p>
+          </div>
+        </div>
+        <input name="passcode" type="password" placeholder="Admin passcode" required>
+        <button class="primary">Unlock Admin</button>
+        <div id="loginMsg" class="msg hidden"></div>
+      </form>
+    </div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark"><img src="empire-formwork-logo.png" alt="Empire Formwork logo"></div>
+        <div>
+          <p class="meta">Admin portal</p>
+          <h1>Empire Formwork Labor</h1>
+        </div>
+      </div>
+      <button id="refreshBtn" type="button">Refresh</button>
+    </header>
+
+    <main class="shell grid">
+      <section class="span metrics-grid">
+        <article class="metric"><span class="meta">Open Now</span><strong id="metricOpen">0</strong></article>
+        <article class="metric"><span class="meta">Pending Approval</span><strong id="metricPending">0</strong></article>
+        <article class="metric"><span class="meta">Approved Hours</span><strong id="metricHours">0.00</strong></article>
+        <article class="metric"><span class="meta">Approved Pay</span><strong id="metricPay">$0.00</strong></article>
+      </section>
+
+      <section class="panel span">
+        <h2>Worker page link</h2>
+        <p class="muted">Give this link to workers after the site is deployed on Netlify.</p>
+        <a id="workerLink" href="/worker.html" target="_blank"></a>
+      </section>
+
+      <section class="panel span">
+        <h2>Live check-ins</h2>
+        <div id="liveEntries" class="records"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Positions</h2>
+        <form id="positionForm" class="stack">
+          <input name="title" placeholder="Position title" required>
+          <input name="rate" type="number" inputmode="decimal" step="0.01" placeholder="Hourly rate" required>
+          <button class="primary">Add Position</button>
+        </form>
+        <div id="positions" class="stack"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Workers</h2>
+        <form id="workerForm" class="stack">
+          <input name="name" placeholder="Worker name" required>
+          <input name="pin" inputmode="numeric" placeholder="Worker PIN">
+          <select name="positionId"></select>
+          <button class="primary">Add Worker</button>
+        </form>
+        <div id="workers" class="stack"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Projects</h2>
+        <form id="projectForm" class="stack">
+          <input name="name" placeholder="Project name" required>
+          <input name="address" placeholder="Address" required>
+          <input name="code" placeholder="Project code" required>
+          <button class="primary">Add Project</button>
+        </form>
+        <div id="projects" class="stack"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Tasks</h2>
+        <form id="taskForm" class="stack">
+          <input name="name" placeholder="Task name" required>
+          <select name="projectId"></select>
+          <button class="primary">Add Task</button>
+        </form>
+        <div id="tasks" class="stack"></div>
+      </section>
+
+      <section class="panel span">
+        <h2>Time approvals</h2>
+        <div id="entries" class="records"></div>
+      </section>
+
+      <section class="panel span">
+        <h2>Approved payroll</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Worker</th>
+                <th>Position</th>
+                <th>Project</th>
+                <th>Task</th>
+                <th>Hours</th>
+                <th>Pay</th>
+              </tr>
+            </thead>
+            <tbody id="payroll"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="admin.js"></script>
+  </body>
+</html>

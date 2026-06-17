@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#172026">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Empire Check In">
+    <title>Empire Formwork Worker Check In</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="center-shell">
+      <section class="panel" style="width:min(580px, 100%)">
+        <header class="brand">
+          <div class="brand-mark"><img src="empire-formwork-logo.png" alt="Empire Formwork logo"></div>
+          <div>
+            <p class="brand-title">Empire Formwork</p>
+            <p class="muted">Worker check in</p>
+          </div>
+        </header>
+
+        <div>
+          <p class="meta" id="todayLabel"></p>
+          <h1 class="hero-title">Today</h1>
+        </div>
+
+        <form id="workerForm" class="stack">
+          <label>Project<select name="projectId" required></select></label>
+          <label>Worker<select name="workerId" required></select></label>
+          <label>PIN<input name="pin" inputmode="numeric" autocomplete="one-time-code" placeholder="Your PIN"></label>
+          <label>Task<select name="taskId" required></select></label>
+          <label>Notes<textarea name="notes" placeholder="Optional note"></textarea></label>
+          <div class="row">
+            <button class="primary" data-action="check-in" type="submit">Check In</button>
+            <button data-action="check-out" type="submit">Check Out</button>
+          </div>
+        </form>
+
+        <div id="msg" class="msg">Loading worker data...</div>
+
+        <section class="stack">
+          <h2>Currently checked in</h2>
+          <div id="openEntries" class="records"></div>
+        </section>
+      </section>
+    </main>
+    <script src="worker.js"></script>
+  </body>
+</html>
