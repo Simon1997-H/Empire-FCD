@@ -6,6 +6,7 @@
     <meta name="theme-color" content="#172026">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Empire Admin">
+    <link rel="apple-touch-icon" href="/empire-formwork-logo.png">
     <title>Empire Formwork Admin</title>
     <link rel="stylesheet" href="styles.css">
   </head>
@@ -46,8 +47,11 @@
 
       <section class="panel span">
         <h2>Worker page link</h2>
-        <p class="muted">Give this link to workers after the site is deployed on Netlify.</p>
-        <a id="workerLink" href="/worker.html" target="_blank"></a>
+        <p class="muted">Share this link with workers, or have them scan the QR code with their iPhone camera.</p>
+        <div class="worker-link-row">
+          <a id="workerLink" href="/worker.html" target="_blank" aria-label="Worker check-in page link"></a>
+          <div id="workerQR" aria-label="QR code for worker check-in page"></div>
+        </div>
       </section>
 
       <section class="panel span">
@@ -122,6 +126,7 @@
       </section>
     </main>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSu1uzJwuDl+MTCNBMM7F6qxhtWtFTFbVAMw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="admin.js"></script>
   </body>
 </html>

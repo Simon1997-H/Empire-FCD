@@ -4,8 +4,17 @@ let passcode = sessionStorage.getItem("empireAdminPasscode") || "";
 let data = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-  $("#workerLink").href = `${location.origin}/worker.html`;
-  $("#workerLink").textContent = `${location.origin}/worker.html`;
+  const workerUrl = `${location.origin}/worker.html`;
+  $("#workerLink").href = workerUrl;
+  $("#workerLink").textContent = workerUrl;
+  new QRCode(document.getElementById("workerQR"), {
+    text: workerUrl,
+    width: 160,
+    height: 160,
+    colorDark: "#172026",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
   bindForms();
   if (passcode) load();
 });
