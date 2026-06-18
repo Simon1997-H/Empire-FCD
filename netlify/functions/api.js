@@ -23,6 +23,7 @@ exports.handler = async (event) => {
       const project = findActive(db.projects, payload.projectId);
       const task = findActive(db.tasks, payload.taskId);
       if (!worker || !project || !task) throw statusError(400, "Choose a valid worker, project, and task.");
+      if (task.projectId && task.projectId !== project.id) throw statusError(400, "Choose a task that belongs to the selected project.");
       if (worker.pin && String(worker.pin) !== String(payload.pin || "")) throw statusError(403, "Worker PIN is incorrect.");
 
       const open = db.entries.find((entry) => entry.workerId === worker.id && !entry.checkOutAt);
@@ -121,21 +122,29 @@ exports.handler = async (event) => {
 async function loadDb() {
   const store = openStore();
   const db = await store.get(STORE_KEY, { type: "json" });
-  return db || seedDb();
+  if (db) return normalizeDb(db);
+
+  const seeded = seedDb();
+  await store.setJSON(STORE_KEY, seeded);
+  return seeded;
 }
 
 async function saveDb(db) {
   const store = openStore();
+  db.updatedAt = new Date().toISOString();
   await store.setJSON(STORE_KEY, db);
 }
 
 function openStore() {
   const siteID = process.env.NETLIFY_BLOBS_SITE_ID || process.env.NETLIFY_SITE_ID || process.env.SITE_ID;
   const token = process.env.NETLIFY_BLOBS_TOKEN || process.env.NETLIFY_AUTH_TOKEN;
+  const name = "empire-time-tracker";
+
   if (siteID && token) {
-    return getStore("empire-time-tracker", { siteID, token });
+    return getStore({ name, siteID, token });
   }
-  return getStore("empire-time-tracker");
+
+  return getStore({ name });
 }
 
 function seedDb() {
@@ -157,17 +166,22 @@ function seedDb() {
       { id: id(), name: "Formwork", projectId: "", active: true },
       { id: id(), name: "Concrete preparation", projectId: project, active: true }
     ],
-    entries: []
+    entries: [],
+    updatedAt: new Date().toISOString()
   };
 }
 
 function publicData(db) {
+  const activeProjects = db.projects.filter((item) => item.active);
+  const activeProjectIds = new Set(activeProjects.map((project) => project.id));
+
   return {
     positions: db.positions.filter((item) => item.active),
     workers: db.workers.filter((item) => item.active).map((worker) => ({ id: worker.id, name: worker.name, positionId: worker.positionId })),
-    projects: db.projects.filter((item) => item.active),
-    tasks: db.tasks.filter((item) => item.active),
-    openEntries: db.entries.filter((entry) => !entry.checkOutAt)
+    projects: activeProjects,
+    tasks: db.tasks.filter((item) => item.active && (!item.projectId || activeProjectIds.has(item.projectId))),
+    openEntries: db.entries.filter((entry) => !entry.checkOutAt),
+    updatedAt: db.updatedAt || ""
   };
 }
 
@@ -182,7 +196,8 @@ function adminData(db) {
     projects: db.projects.filter((item) => item.active),
     tasks: db.tasks.filter((item) => item.active),
     entries: db.entries,
-    payroll: payroll(db)
+    payroll: payroll(db),
+    updatedAt: db.updatedAt || ""
   };
 }
 
@@ -227,6 +242,17 @@ function normalizeItem(type, item = {}) {
   if (type === "projects") return { name: text(item.name), address: text(item.address), code: text(item.code).toUpperCase(), active: true };
   if (type === "tasks") return { name: text(item.name), projectId: text(item.projectId), active: true };
   return item;
+}
+
+function normalizeDb(db) {
+  return {
+    positions: Array.isArray(db.positions) ? db.positions : [],
+    workers: Array.isArray(db.workers) ? db.workers : [],
+    projects: Array.isArray(db.projects) ? db.projects : [],
+    tasks: Array.isArray(db.tasks) ? db.tasks : [],
+    entries: Array.isArray(db.entries) ? db.entries : [],
+    updatedAt: db.updatedAt || ""
+  };
 }
 
 function findActive(items, idValue) {

@@ -5,7 +5,10 @@ let data = { projects: [], workers: [], tasks: [], openEntries: [] };
 document.addEventListener("DOMContentLoaded", () => {
   $("#todayLabel").textContent = dateFormat.format(new Date());
   $("#workerForm").addEventListener("submit", submitTime);
-  $("#workerForm").projectId.addEventListener("change", renderTasks);
+  $("#workerForm").projectId.addEventListener("change", () => {
+    renderTasks();
+    renderOpenEntries();
+  });
   load();
 });
 
@@ -20,8 +23,20 @@ async function load() {
 }
 
 function render() {
+  const selectedProjectId = $("#workerForm").projectId.value;
+  const selectedWorkerId = $("#workerForm").workerId.value;
+
   $("#workerForm").projectId.innerHTML = data.projects.map((project) => option(project.id, `${project.name} (${project.code})`)).join("");
   $("#workerForm").workerId.innerHTML = data.workers.map((worker) => option(worker.id, worker.name)).join("");
+
+  if (data.projects.some((project) => project.id === selectedProjectId)) {
+    $("#workerForm").projectId.value = selectedProjectId;
+  }
+
+  if (data.workers.some((worker) => worker.id === selectedWorkerId)) {
+    $("#workerForm").workerId.value = selectedWorkerId;
+  }
+
   renderTasks();
   renderOpenEntries();
 }
@@ -29,12 +44,16 @@ function render() {
 function renderTasks() {
   const projectId = $("#workerForm").projectId.value;
   const tasks = data.tasks.filter((task) => !task.projectId || task.projectId === projectId);
-  $("#workerForm").taskId.innerHTML = tasks.map((task) => option(task.id, task.name)).join("");
+  $("#workerForm").taskId.innerHTML = tasks.length
+    ? tasks.map((task) => option(task.id, task.name)).join("")
+    : `<option value="">No tasks available</option>`;
 }
 
 function renderOpenEntries() {
-  $("#openEntries").innerHTML = data.openEntries.length
-    ? data.openEntries.map((entry) => `
+  const projectId = $("#workerForm").projectId.value;
+  const rows = projectId ? data.openEntries.filter((entry) => entry.projectId === projectId) : data.openEntries;
+  $("#openEntries").innerHTML = rows.length
+    ? rows.map((entry) => `
         <article class="record">
           <span class="pill open">open</span>
           <b>${entry.workerName}</b>
@@ -49,6 +68,12 @@ async function submitTime(event) {
   event.preventDefault();
   const button = event.submitter;
   const payload = Object.fromEntries(new FormData(event.currentTarget).entries());
+
+  if (!payload.projectId || !payload.workerId || !payload.taskId) {
+    setMsg("Ask admin to add at least one active project, worker, and task.", "bad");
+    return;
+  }
+
   button.disabled = true;
   setMsg("Saving...", "");
 

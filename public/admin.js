@@ -4,8 +4,8 @@ let passcode = sessionStorage.getItem("empireAdminPasscode") || "";
 let data = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-  $("#workerLink").href = `${location.origin}/worker.html`;
-  $("#workerLink").textContent = `${location.origin}/worker.html`;
+  $("#workerLink").href = `${location.origin}/worker`;
+  $("#workerLink").textContent = `${location.origin}/worker`;
   bindForms();
   if (passcode) load();
 });

@@ -2,8 +2,8 @@
 
 This is a Netlify-ready website with:
 
-- `/admin.html` for admin access only
-- `/worker.html` for workers to check in and check out
+- `/admin` for admin access only
+- `/worker` for workers to check in and check out
 - shared online storage using Netlify Blobs
 - Netlify Functions API under `/api/*`
 
@@ -15,14 +15,14 @@ Set this environment variable in Netlify:
 ADMIN_PASSCODE=your-secret-passcode
 ```
 
-If the worker page says `Request failed` and the API log says Netlify Blobs is not configured, also add:
+To make sure admin changes and worker time entries are saved permanently, add these variables too:
 
 ```text
-NETLIFY_BLOBS_SITE_ID=your-netlify-project-id
+NETLIFY_BLOBS_SITE_ID=your-netlify-site-id
 NETLIFY_BLOBS_TOKEN=your-netlify-personal-access-token
 ```
 
-Find the Project ID in Netlify under Project configuration > General > Project information. Create a personal access token from User settings > Applications > Personal access tokens.
+Find the Site ID in Netlify under Site configuration > General > Site details. Create a personal access token from User settings > Applications > Personal access tokens.
 
 If you do not set it, the temporary default passcode is:
 
@@ -59,18 +59,20 @@ Use these links after Netlify gives you a domain:
 ```text
 https://your-site.netlify.app/admin.html
 https://your-site.netlify.app/worker.html
+https://your-site.netlify.app/admin
+https://your-site.netlify.app/worker
 ```
 
 Give workers only the worker link.
 
 ## First setup
 
-1. Open `/admin.html`.
+1. Open `/admin`.
 2. Enter the admin passcode.
 3. Add positions and hourly rates.
 4. Add workers and optional PINs.
 5. Add projects.
 6. Add tasks.
-7. Give workers the `/worker.html` link.
+7. Give workers the `/worker` link.
 
 Workers check in and out from their phones. Finished shifts appear in admin as pending entries. Admin can approve, reject, or return entries to pending.
